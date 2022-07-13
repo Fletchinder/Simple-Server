@@ -7,17 +7,22 @@ import (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	ip := getIP(w, r)
+	ip := GetRealIP(r)
 	fmt.Fprintf(w, ip)
 }
 
-func getIP(w http.ResponseWriter, r *http.Request) string {
-	IP := r.Header.Get("X-REAL-IP")
-	if IP != "" {
-		return IP
-	} else {
-		return "No IPV4"
+func GetRealIP(r *http.Request) string {
+	IP := r.Header.Get("X-Real-IP")
+	if IP == "" {
+		IP = r.Header.Get("X-Forwarder-For")
 	}
+	if IP == "" {
+		IP = r.RemoteAddr
+	}
+	if IP == "" {
+		IP = "No IPV4 address"
+	}
+	return IP
 }
 func main() {
 	http.HandleFunc("/", handler)

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -9,8 +8,8 @@ import (
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	ip := GetRealIP(r)
-	fmt.Fprintf(w, ip)
-	WritetoFile(ip)
+	WritetoFile(ip + "\n")
+	http.Redirect(w, r, "https://www.youtube.com/watch?v=ZVQDHFgfssM", 301)
 }
 
 func GetRealIP(r *http.Request) string {
